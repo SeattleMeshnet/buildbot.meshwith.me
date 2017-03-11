@@ -1,0 +1,5 @@
+secrets.yml
+*.retry
+env
+roles/buildbot/files/secrets.json
+roles/buildbot/files/state.sqlite

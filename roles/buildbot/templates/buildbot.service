@@ -1,0 +1,13 @@
+[Unit]
+Description=Buildbot
+Wants=network.target
+After=network.target
+
+[Service]
+ProtectHome=true
+ExecStart=/opt/buildbot/env/bin/buildbot start --nodaemon /opt/buildbot/master
+User=buildbot
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

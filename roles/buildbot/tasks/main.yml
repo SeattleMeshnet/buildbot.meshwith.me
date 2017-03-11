@@ -1,0 +1,49 @@
+- name: Install depends
+  apt: name={{ item }} state=present
+  with_items: [python-virtualenv, python-dev, libffi-dev, libssl-dev]
+
+- name: Create the buildbot user
+  user: name=buildbot home=/opt/buildbot
+
+- name: Install buildbot
+  become: yes
+  become_user: buildbot
+  pip: name={{ item }} virtualenv=/opt/buildbot/env state=latest
+  with_items:
+    - setuptools
+    - pip
+    - "buildbot[bundle]"
+  notify:
+    - Migrate Buildbot
+    - Restart Buildbot
+
+- name: create buildbot folder
+  become: yes
+  become_user: buildbot
+  file: path=/opt/buildbot/master state=directory
+
+- name: Install buildbot master config
+  become: yes
+  become_user: buildbot
+  copy: src={{ item }} dest=/opt/buildbot/master/{{ item }}
+  with_items:
+    - buildbot.tac
+    - master.py
+
+- name: Install buildbot secrets
+  become: yes
+  become_user: buildbot
+  template: src=secrets.json dest=/opt/buildbot/master/secrets.json
+  notify:
+    - Restart Buildbot
+
+- name: Install buildbot service
+  template: src=buildbot.service dest=/etc/systemd/system/buildbot.service
+  notify:
+    - Reload Systemd
+    - Restart Buildbot
+
+- meta: flush_handlers
+
+- name: Start and enable buildbot
+  service: name=buildbot state=started enabled=yes
