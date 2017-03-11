@@ -63,14 +63,13 @@ c['schedulers'].append(schedulers.AnyBranchScheduler(name="all", treeStableTimer
 # c['schedulers'].append(schedulers.ForceScheduler(name="force", builderNames=allBuilders))
 
 authz = util.Authz(allowRules=[
-            util.StopBuildEndpointMatcher(role="admins"),
-            util.ForceBuildEndpointMatcher(role="admins"),
-            util.RebuildBuildEndpointMatcher(role="admins")
+                util.StopBuildEndpointMatcher(role="admins"),
+                util.ForceBuildEndpointMatcher(role="admins"),
+                util.RebuildBuildEndpointMatcher(role="admins")
             ], roleMatchers=[util.RolesFromUsername(roles=["admins"], usernames=secrets['webauth'].keys())]
 )
 c['www'] = dict(port=8010,
-                plugins=dict(waterfall_view={},
-                             console_view={}),
+                plugins=dict(waterfall_view={}, console_view={}),
                 auth=util.UserPasswordAuth(secrets['webauth'].iteritems()),
                 authz=authz)
 
