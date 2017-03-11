@@ -1,0 +1,30 @@
+{
+  "key": "h4quw20xhnz4m40l5td9h6qhug86yghs83w54qd0v7fzywdsh700.k",
+  "hostname": "julian.meshwith.me",
+  "operator": {
+    "name": "finn",
+    "email":"finn@seattlemesh.net",
+    "xmpp": "finn@meshwith.me"
+  },
+  "pgp": {
+    "fingerprint": "39B291938DDA08CB7FD8B848319DB1ED68742E2C",
+    "full": "http://h.finn.io/pgp.key"
+  },
+  "services": [
+    {
+      "name": "Buildbot",
+      "uri": "http://h.buildbot.meshwith.me",
+      "description": "A pair of buildbot masters. One for building cjdns on a variety of architectures, one for making OpenWRT images"
+    },
+    {
+      "name": "OpenWRT Repo",
+      "uri": "http://h.openwrt.repo.cjdns.ca",
+      "description": "A repo for cjdns on OpenWRT, including various snapshots and other goodies"
+    },
+    {
+      "name": "Documentation",
+      "uri": "http://h.docs.meshwith.me",
+      "desription": "Rendered version of http://gitboria.com/projectmeshnet/documentation"
+    }
+  ]
+}

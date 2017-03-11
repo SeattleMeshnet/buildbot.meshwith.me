@@ -1,0 +1,39 @@
+- name: Install nginx
+  apt: name=nginx state=present
+
+- name: Download acme.sh
+  git: repo=https://github.com/Neilpang/acme.sh dest=/usr/local/src/acme.sh
+
+- name: Install acme.sh
+  command: /usr/local/src/acme.sh/acme.sh --install
+  args:
+    creates: /root/.acme.sh/acme.sh
+    chdir: /usr/local/src/acme.sh
+
+
+- name: Issue the certificate
+  command: /root/.acme.sh/acme.sh --issue -d buildbot.meshwith.me -w /var/www/html
+  args:
+    chdir: /root/.acme.sh
+    creates: /root/.acme.sh/buildbot.meshwith.me
+
+- name: Template nginx config
+  template: src=buildbot.conf.j2 dest=/etc/nginx/sites-available/buildbot.conf
+  notify:
+    - Reload nginx
+
+- name: Disable the default config
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify:
+    - Restart nginx
+
+- name: Enable the buildbot config
+  file: src=/etc/nginx/sites-available/buildbot.conf dest=/etc/nginx/sites-enabled/buildbot.conf state=link
+  notify:
+    - Restart nginx
+
+- name: Copy the files for the root www
+  copy: src=html/ dest=/var/www/html/
+
+- name: Ensure nginx is running
+  service: name=nginx state=started

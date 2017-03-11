@@ -1,0 +1,26 @@
+User-agent: *
+
+Allow: /snapshots
+
+Disallow: /openwrt/waterfall
+Disallow: /openwrt/builders
+Disallow: /openwrt/changes
+Disallow: /openwrt/buildslaves
+Disallow: /openwrt/schedulers
+Disallow: /openwrt/one_line_per_build
+Disallow: /openwrt/builders
+Disallow: /openwrt/grid
+Disallow: /openwrt/tgrid
+Disallow: /openwrt/json
+
+Disallow: /cjdns/waterfall
+Disallow: /cjdns/builders
+Disallow: /cjdns/changes
+Disallow: /cjdns/buildslaves
+Disallow: /cjdns/schedulers
+Disallow: /cjdns/one_line_per_build
+Disallow: /cjdns/builders
+Disallow: /cjdns/grid
+Disallow: /cjdns/tgrid
+Disallow: /cjdns/json
+Disallow: /dots
