@@ -3,3 +3,4 @@ secrets.yml
 env
 roles/buildbot/files/secrets.json
 roles/buildbot/files/state.sqlite
+/secrets.json
