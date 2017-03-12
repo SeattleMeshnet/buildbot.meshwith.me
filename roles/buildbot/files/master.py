@@ -1,7 +1,7 @@
 # -*- python -*-
 # ex: set syntax=python:
 import json
-from buildbot.plugins import worker, schedulers, util, steps
+from buildbot.plugins import worker, schedulers, util, steps, reporters
 from buildbot.util import identifiers
 # from buildbot import statistics
 
@@ -74,27 +74,10 @@ c['www'] = dict(port=8010,
                 auth=util.UserPasswordAuth(secrets['webauth'].iteritems()),
                 authz=authz)
 
-# hypeirc = words.IRC("fcf2:ff45:a10:2ca1:fb5c:426d:3505:4f18", "buildbot",
-#                     channels=[{"channel": "#cjdns"}],
-#                     notify_events={
-#                         'exception': 1,
-#                         'successToFailure': 1,
-#                         'failureToSuccess': 1,
-#                         'failure': 1
-#                         }
-#                     )
-# c['status'].append(hypeirc)
-# c['status'] = []
-# irc = reporters.IRC("irc.fc00.io", "buildbot",
-#                     useColors=False,
-#                     channels=[{"channel": "#radar"}],
-#                     notify_events={
-#                         'started': 1,
-#                         'success': 1,
-#                         'failure': 1,
-#                         'exception': 1
-#                     })
-# c['status'].append(irc)
+c['services'] = []
+irc = reporters.IRC("irc.fc00.io", "buildbot", useColors=True, channels=[{"channel": "#radar"}],
+                    notify_events={'started': 1, 'success': 1, 'failure': 1, 'exception': 1})
+c['services'].append(irc)
 
 c['title'] = "CJDNS"
 c['titleURL'] = "https://github.com/cjdelisle/cjdns/"

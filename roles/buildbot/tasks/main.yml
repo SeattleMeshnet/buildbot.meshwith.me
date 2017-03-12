@@ -30,7 +30,6 @@
     - buildbot.tac
     - master.py
   notify:
-    - Migrate Buildbot
     - Restart Buildbot
 
 - name: Install buildbot secrets

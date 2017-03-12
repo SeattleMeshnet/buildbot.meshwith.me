@@ -1,5 +1,5 @@
 - name: Migrate Buildbot
-  command: /opt/buildbot/env/bin/buildbot upgrade-master /opt/buildbot/master
+  command: /opt/buildbot/env/bin/buildbot upgrade-master /opt/buildbot/master/
 
 - name: Reload Systemd
   command: systemctl daemon-reload
