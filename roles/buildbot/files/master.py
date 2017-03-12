@@ -75,7 +75,8 @@ c['www'] = dict(port=8010,
                 authz=authz)
 
 c['services'] = []
-irc = reporters.IRC("irc.fc00.io", "buildbot", useColors=True, channels=[{"channel": "#radar"}],
+irc = reporters.IRC("fcec:ae97:8902:d810:6c92:ec67:efb2:3ec5", "buildbot", useColors=True,
+                    channels=[{"channel": "#radar"}],
                     notify_events={'started': 1, 'success': 1, 'failure': 1, 'exception': 1})
 c['services'].append(irc)
 
