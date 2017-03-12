@@ -60,7 +60,7 @@ for system in builders:
 
 c['schedulers'] = []
 c['schedulers'].append(schedulers.AnyBranchScheduler(name="all", treeStableTimer=60, builderNames=allBuilders))
-# c['schedulers'].append(schedulers.ForceScheduler(name="force", builderNames=allBuilders))
+c['schedulers'].append(schedulers.ForceScheduler(name="force", builderNames=[str(x) for x in allBuilders]))
 
 authz = util.Authz(allowRules=[
                 util.StopBuildEndpointMatcher(role="admins"),
@@ -70,6 +70,7 @@ authz = util.Authz(allowRules=[
 )
 c['www'] = dict(port=8010,
                 plugins=dict(waterfall_view={}, console_view={}),
+                change_hook_dialects={'github': {}},
                 auth=util.UserPasswordAuth(secrets['webauth'].iteritems()),
                 authz=authz)
 
