@@ -4,15 +4,17 @@
 - name: Download acme.sh
   git: repo=https://github.com/Neilpang/acme.sh dest=/usr/local/src/acme.sh
 
+- name: Create the debian repo folder
+  file: path=/var/www/html/debian state=directory owner=buildbot
+
 - name: Install acme.sh
   command: /usr/local/src/acme.sh/acme.sh --install
   args:
     creates: /root/.acme.sh/acme.sh
     chdir: /usr/local/src/acme.sh
 
-
 - name: Issue the certificate
-  command: /root/.acme.sh/acme.sh --issue -d buildbot.meshwith.me -w /var/www/html
+  command: /root/.acme.sh/acme.sh --issue -d buildbot.meshwith.me -d repo.meshwith.me -w /var/www/html --renew-hook "systemctl reload nginx"
   args:
     chdir: /root/.acme.sh
     creates: /root/.acme.sh/buildbot.meshwith.me

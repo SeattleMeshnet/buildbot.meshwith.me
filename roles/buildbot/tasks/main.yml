@@ -29,6 +29,7 @@
   with_items:
     - buildbot.tac
     - master.py
+    - extras/
   notify:
     - Restart Buildbot
 
