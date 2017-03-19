@@ -11,6 +11,7 @@ for release in jessie stretch sid; do
     gzip -c dists/$release/main/binary-$arch/Packages > dists/$release/main/binary-$arch/Packages.gz
   done
   apt-ftparchive release dists/$release > dists/$release/Release
-  gpg --clearsign -o dists/$release/InRelease dists/$release/Release
-  gpg -abs -o dists/$release/Release.gpg dists/$release/Release
+  rm dists/$release/InRelease dists/$release/Release.gpg
+  gpg --no-tty --clearsign -o dists/$release/InRelease dists/$release/Release
+  gpg --no-tty -abs -o dists/$release/Release.gpg dists/$release/Release
 done
