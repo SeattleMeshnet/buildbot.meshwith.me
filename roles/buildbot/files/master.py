@@ -31,8 +31,15 @@ c['protocols'] = {'pb': {'port': 9989}}
 neonFlags = "-O2 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -ftree-vectorize -ffast-math -mfloat-abi=hard -marm "\
             "-Wno-error=maybe-uninitialized"
 windowsEnv = {"SYSTEM": "win32", "CROSS_COMPILE": "i686-w64-mingw32-"}
-build_sed = 's/Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>/Seattle Meshnet Buildbot <buildbot@seattlemesh.net>/g'
 signing_key = "963311B7591EF9C93BB400760237B5B84FD6A26F"
+
+
+@util.renderer
+def getChanges(props):
+    out = ""
+    for change in props.getProperty("changes", []):
+        out += "  * " + change.comments.split("\n")[0]
+    return out
 
 factories = {
     "cjdns": util.BuildFactory([steps.Git(repourl='git://github.com/cjdelisle/cjdns.git'),
@@ -42,14 +49,19 @@ factories = {
                                   steps.ShellCommand(command=['./clean']),
                                   steps.Compile(command=['./cross-do'], env=windowsEnv)]),
     "deb": util.BuildFactory([steps.Git(repourl='git://github.com/cjdelisle/cjdns.git'),
-                              steps.ShellCommand(command=['./clean']),
-                              steps.ShellCommand(command=['sed', '-i', build_sed, 'debian/control'],
-                                                 name="Update debian/control"),
-                              steps.Compile(command=['dpkg-buildpackage', '--sign-key=%s' % signing_key]),
                               steps.MakeDirectory(dir="extras", workdir="."),
+                              steps.ShellCommand(command=['./clean'], name="Clean previous build"),
                               steps.FileDownload(mastersrc="extras/mkrepo.sh", workerdest="mkrepo.sh",
-                                                 workdir="extras"),
-                              steps.ShellCommand(command=["bash", "./extras/mkrepo.sh"], workdir="."),
+                                                 workdir="extras", name="Download mkrepo.sh"),
+                              steps.FileDownload(mastersrc="extras/updateChangelog.sh", workerdest="updateChangelog.sh",
+                                                 workdir="extras", name="Download updateChangelog.sh"),
+                              steps.StringDownload(getChanges, workerdest="changelog.txt", workdir=".",
+                                                   name="Send Changelog"),
+                              steps.ShellCommand(command=['bash', '../extras/updateChangelog.sh'],
+                                                 name="Update Changelog"),
+                              steps.Compile(command=['dpkg-buildpackage', '--sign-key=%s' % signing_key],
+                                            name="Build Package"),
+                              steps.ShellCommand(command=["bash", "./extras/mkrepo.sh"], workdir=".", name="mkrepo.sh"),
                               steps.DirectoryUpload(workersrc=".", masterdest="/var/www/html/debian/",
                                                     url="https://repo.meshwith.me/debian", workdir="repo")]),
     "neon": util.BuildFactory([steps.Git(repourl='git://github.com/cjdelisle/cjdns.git'),
