@@ -3,29 +3,28 @@
   with_items: [python-virtualenv, python-dev, libffi-dev, libssl-dev]
 
 - name: Create the buildbot user
-  user: name=buildbot home=/opt/buildbot
+  user: name={{ buildbot_user }} home={{ buildbot_home }}
 
 - name: Install buildbot
   become: yes
-  become_user: buildbot
-  pip: name={{ item }} virtualenv=/opt/buildbot/env state=latest
+  become_user: "{{ buildbot_user }}"
+  pip: name={{ item }} virtualenv={{ buildbot_home }}/env state=latest
   with_items:
     - setuptools
     - pip
     - "buildbot[bundle]"
   notify:
-    - Migrate Buildbot
     - Restart Buildbot
 
 - name: create buildbot folder
   become: yes
-  become_user: buildbot
-  file: path=/opt/buildbot/master state=directory
+  become_user: "{{ buildbot_user }}"
+  file: path={{ buildbot_home }}/master state=directory
 
 - name: Install buildbot master config
   become: yes
-  become_user: buildbot
-  copy: src={{ item }} dest=/opt/buildbot/master/{{ item }}
+  become_user: "{{ buildbot_user }}"
+  copy: src={{ item }} dest={{ buildbot_home }}/master/{{ item }}
   with_items:
     - buildbot.tac
     - master.py
@@ -35,13 +34,13 @@
 
 - name: Install buildbot secrets
   become: yes
-  become_user: buildbot
-  template: src=secrets.json dest=/opt/buildbot/master/secrets.json
+  become_user: "{{ buildbot_user }}"
+  template: src=secrets.json dest={{ buildbot_home }}/master/secrets.json
   notify:
     - Restart Buildbot
 
 - name: Install buildbot service
-  template: src=buildbot.service dest=/etc/systemd/system/buildbot.service
+  template: src=buildbot.service dest=/etc/systemd/system/{{ buildbot_service }}.service
   notify:
     - Reload Systemd
     - Restart Buildbot
@@ -49,4 +48,4 @@
 - meta: flush_handlers
 
 - name: Start and enable buildbot
-  service: name=buildbot state=started enabled=yes
+  service: name={{ buildbot_service }} state=started enabled=yes

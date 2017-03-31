@@ -5,9 +5,10 @@ After=network.target
 
 [Service]
 ProtectHome=true
-ExecStart=/opt/buildbot/env/bin/buildbot start --nodaemon /opt/buildbot/master
-WorkingDirectory=/opt/buildbot/master
-User=buildbot
+ExecStartPre={{ buildbot_home }}/env/bin/buildbot upgrade-master {{ buildbot_home }}/master/
+ExecStart={{ buildbot_home }}/env/bin/buildbot start --nodaemon {{ buildbot_home }}/master
+WorkingDirectory={{ buildbot_home }}/master
+User={{ buildbot_user }}
 Restart=always
 
 [Install]

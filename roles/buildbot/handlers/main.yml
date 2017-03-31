@@ -5,4 +5,4 @@
   command: systemctl daemon-reload
 
 - name: Restart Buildbot
-  service: name=buildbot state=restarted
+  service: name={{ buildbot_service }} state=restarted
